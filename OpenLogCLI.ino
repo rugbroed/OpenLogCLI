@@ -1,17 +1,19 @@
 // Author --> Kasper Benjamin Hansen [kbhdk1976@gmail.com]
 //
-// OpenLogCLI is an Arduino serial monitor supported OpenLog filesystem and command browser using
+// OpenLogCLI (v0.5) is an Arduino serial monitor supported OpenLog filesystem and command browser using
 // CLI (Command Line Interpreter)
+// 
+// Required: There should be a CONFIG.TXT in the root of the card with the following; "9600,26,3,2".
 // 
 // Wire your boards like this;
 //
 // OpenLog.GRN --> Arduino.4
-// OpenLog.RXI --> Arduino.6
-// OpenLog.TXO --> Arduino.5
+// OpenLog.RXI --> Arduino.5
+// OpenLog.TXO --> Arduino.6
 // OpenLog.VCC --> Arduino.3,3v
 // OpenLog.GND --> Arduino.GND
 //
-// Start out by pressing ? [enter] in the Serial Monitor.
+// Start out by uploading this sketch to your Arduino, open the serial monitor and press "?" [enter].
 //
 // :-) Enjoy
 
@@ -25,6 +27,7 @@
 #define openLogRST 4
 #define ledPWR 13
 #define RECEIVE_BUFFER_SIZE 1000
+#define TERMINATION "$q"
 
 SoftwareSerial OpenLog(openLogRX, openLogTX);
 
@@ -40,14 +43,14 @@ void setup() {
   Serial.begin(9600);
   
   doResetOpenLog();
-  char c = getCommandMode();
+  getCommandMode();
   
   //TODO Read termination string from CONFIG.TXT
 }
 
 void doCommand(String command) {
   olPrint(command);
-  waitForUsageMode();
+  getCommandMode();
 }
 
 void olPrint(String s) {
@@ -61,6 +64,8 @@ void flipMode() {
   OpenLog.write(26);
   OpenLog.write(26);
   OpenLog.write(26);
+  
+  getCommandMode();
 }
 
 void getCommandMode() {
@@ -148,15 +153,16 @@ String readFromSerial() {
 void loop() {
   inputString = String(readFromSerial());
   if (inputString != NULL) {
-    if (inputString == "$q") {
+    if (inputString == TERMINATION) {
       flipMode();
     }
-
-    olPrint(inputString);
-
-    char* chars = readStringFromOpenLog();
-
-    Serial.println(chars);
-    chars = NULL;
+    else {
+      olPrint(inputString);
+  
+      char* chars = readStringFromOpenLog();
+  
+      Serial.println(chars);
+      chars = NULL;
+    }
   }
 }
