@@ -1,5 +1,19 @@
-Author --> Kasper Benjamin Hansen [kbhdk1976@gmail.com]
+Now you've bought your brand new OpenLog (http://www.sparkfun.com/products/9530), and started to write to the card. However, you quickly get tired of taking the card out of OpenLog and inserting it into your card reader, to see the mess that you just did. Enter; OpenLogCLI !
 
+1) Write "9600,26,3,2" into a file called CONFIG.TXT on the SD-card
+2) Wire the board as described (change the tx and rx to your liking)
+3) Upload to the Arduino
+4) Enter the serial monitor
+
+Now you can issue commands to the card, like you had a command prompt in a directory structure on your local disc!
+
+Try "ls" and hitting enter. Or even more cool, try "?" and hitting enter.
+
+Cheers.
+
+Kasper Benjamin Hansen
+kbhdk1976@gmail.com
+
+Versions:
 v0.5
 	Basic functionality in place.
-
