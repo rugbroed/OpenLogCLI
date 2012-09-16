@@ -1,17 +1,17 @@
 // Author --> Kasper Benjamin Hansen [kbhdk1976@gmail.com]
 //
-// OpenLogCLI (v0.5) is an Arduino serial monitor supported OpenLog filesystem and command browser using
+// OpenLogCLI is an Arduino serial monitor supported OpenLog filesystem and command browser using
 // CLI (Command Line Interpreter)
 // 
 // Required: There should be a CONFIG.TXT in the root of the card with the following; "9600,26,3,2".
 // 
 // Wire your boards like this;
 //
-// OpenLog.GRN --> Arduino.4
-// OpenLog.RXI --> Arduino.5
-// OpenLog.TXO --> Arduino.6
-// OpenLog.VCC --> Arduino.3,3v
-// OpenLog.GND --> Arduino.GND
+// Arduino.4    --> OpenLog.GRN
+// Arduino.11   --> OpenLog.RXI (OL_RX)
+// Arduino.12   --> OpenLog.TXO (OL_TX)
+// Arduino.3,3v --> OpenLog.VCC
+// Arduino.GND  --> OpenLog.GND
 //
 // Start out by uploading this sketch to your Arduino, open the serial monitor and press "?" [enter].
 //
@@ -20,24 +20,23 @@
 #include <SoftwareSerial.h>
 #include <avr/pgmspace.h>˛
 
-#define sensorRX A0
+#define OL_RX  7 // OK
+#define OL_TX  8 // OK
+#define OL_GRN 5 // OK
+#define OL_VCC 6 // OK
 
-#define openLogRX 6
-#define openLogTX 5
-#define openLogRST 4
 #define ledPWR 13
 #define RECEIVE_BUFFER_SIZE 1000
 #define TERMINATION "$q"
 
-SoftwareSerial OpenLog(openLogRX, openLogTX);
+SoftwareSerial OpenLog(OL_RX, OL_TX);
 
 String inputString;
 char c;
 
 void setup() {
-  pinMode(sensorRX, INPUT);
   pinMode(ledPWR, OUTPUT);
-  pinMode(openLogRST, OUTPUT);
+  pinMode(OL_GRN, OUTPUT);
   
   OpenLog.begin(9600);
   Serial.begin(9600);
@@ -92,9 +91,9 @@ void getCommandMode() {
 }
 
 void doResetOpenLog() {
-  digitalWrite(openLogRST, LOW);
+  digitalWrite(OL_GRN, LOW);
   delay(100);
-  digitalWrite(openLogRST, HIGH);
+  digitalWrite(OL_GRN, HIGH);
   delay(100);
 }
 
